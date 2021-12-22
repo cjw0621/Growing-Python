@@ -1,5 +1,6 @@
-#This program will add guests to a room number, you can easly add and remove guests from the registry.
+# This program will add guests to a room number, you can easily add and remove guests from the registry.
 guest_seat = {}
+empty_rooms = []
 count = 99
 print("Guest Registration Form tm.")
 print("Created by: Chase Whitney")
@@ -14,6 +15,7 @@ while True:
         print("\nPlease enter a valid number.")
 
 while True:
+    rooms_left = length - len(guest_seat)
     guests = input("\nEnter a Guests name or a command.\nType help to view available commands:\n-> ")
     guests = guests.title()
     if guests == "/":
@@ -61,16 +63,15 @@ while True:
 
                 Del_name = input("\nEnter a name to delete\n-> ").title()
                 if guest_seat.get(Del_name):
+                    empty_rooms.insert(count, guest_seat[Del_name])
                     del guest_seat[Del_name]
                     print("\n**Guest successfully removed**\n")
-                    count -= 1
-                    confirm = input("\nWould you like to remove another Guest?\ny or n -> ").title()
+                    confirm = input("\nWould you like to remove another Guest?\nY or N -> ").title()
                     if confirm == "N":
                         break
                     elif confirm == "Y":
                         for k, v in guest_seat.items():
                             print(k, ":", v)
-
 
                 else:
                     print("**Guests name does not exist in Registry. Check the name and try again.**")
@@ -87,11 +88,18 @@ while True:
     elif guests == "Av":
         print(f"\n{length - len(guest_seat)} rooms are available.\n")
 
-    elif len(guest_seat) >= length:
+    elif len(guest_seat) == length:
         print("\n**Guest was not added...**\n")
         print("**You have no more rooms available\n")
 
     else:
-        count += 1
-        guest_seat["{}".format(guests)] = "Room No. " + str(count)
-        print(f"\n**{guests} was successfully added to registry.**\n")
+        if len(empty_rooms) > 0:
+            print("\n!!New Guests will be booked in {} first!!\n".format(empty_rooms[-1]))
+            guest_seat["{}". format(guests)] = "{}".format(empty_rooms[-1])
+            print("\n**{} was successfully booked into {}**\n".format(guests, empty_rooms[-1]))
+            empty_rooms.remove(empty_rooms[-1])
+
+        else:
+            count += 1
+            guest_seat["{}".format(guests)] = "Room No. {}".format(count)
+            print("\n**{} was successfully booked into Room No. {}.**\n".format(guests, count))
