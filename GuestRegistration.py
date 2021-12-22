@@ -1,4 +1,4 @@
-seats = []
+#This program will add guests to a room number, you can easly add and remove guests from the registry.
 guest_seat = {}
 count = 99
 print("Guest Registration Form tm.")
@@ -26,9 +26,9 @@ while True:
         else:
             for k, v in guest_seat.items():
                 print(k, ":", v)
-            edit = input("Who do you want to edit?\n-> ").capitalize()
+            edit = input("Who do you want to edit?\n-> ").title()
             if edit in guest_seat:
-                new_name = input("Who do you want to replace {0} with?\n-> ".format(edit)).capitalize()
+                new_name = input("Who do you want to replace {0} with?\n-> ".format(edit)).title()
                 guest_seat[new_name] = guest_seat[edit]
                 del guest_seat[edit]
                 print("**Guest registry has been successfully updated**\n")
@@ -59,12 +59,12 @@ while True:
                     print("\n**You have no more Guests in the Registry**\n")
                     break
 
-                Del_name = input("\nEnter a name to delete\n-> ").capitalize()
+                Del_name = input("\nEnter a name to delete\n-> ").title()
                 if guest_seat.get(Del_name):
                     del guest_seat[Del_name]
                     print("\n**Guest successfully removed**\n")
                     count -= 1
-                    confirm = input("\nWould you like to remove another Guest?\ny or n -> ").capitalize()
+                    confirm = input("\nWould you like to remove another Guest?\ny or n -> ").title()
                     if confirm == "N":
                         break
                     elif confirm == "Y":
