@@ -11,9 +11,7 @@ class GuestRegistration:
             self.count = 99
             self.master_user_info = {}
             self.recovery_question = []
-            self.tot_num_room = 0
-
-
+            self.tot_num_room = None
 
 
         def create_registration(self):
@@ -22,15 +20,13 @@ class GuestRegistration:
             print("Created by: Chase Whitney")
             print()
             input("Press Enter to start:")
-            GuestRegistration.guest_register(self)
+            self.guest_register()
 
 
         def tot_num_rooms_change(self):
             u_i = int(input("Whats your max number of rooms?\n"))
-            tot_num_rooms_1 = int(u_i)
-            self.tot_num_room = tot_num_rooms_1
-            return self.tot_num_room
-
+            self.tot_num_room = u_i
+            
 
         def make_pass_def(self, make_pass):
 
@@ -49,14 +45,14 @@ class GuestRegistration:
             else:
                 print("\n!! Password not strong enough !!.\n!! You must add at least 3 numbers and symbols to your password. !!\n")
                 make_pass_new = input("Create a system password:\n")
-                return GuestRegistration.make_pass_def(self, make_pass_new)
+                self.make_pass_def(make_pass_new)
 
 
         def guest_register(self):
 
             if self.count == 99:
                 make_pass = input("Create a system password:\n")
-                GuestRegistration.make_pass_def(self, make_pass)
+                self.make_pass_def(make_pass)
                 print("\nYou will need to create a password recovery:\n")
                 make_recovery1 = input("Whats the first recovery question:\n")
                 self.recovery_question.insert(-1, make_recovery1)
@@ -73,7 +69,7 @@ class GuestRegistration:
 
                 try:
                     length = int(input("\nWhats the your max number of rooms?\n"))
-                    GuestRegistration.tot_num_room = length
+                    self.tot_num_room = length
                 except ValueError:
                     print("\nPlease enter a valid number.")
 
@@ -163,7 +159,7 @@ class GuestRegistration:
                             "Please enter the systems password to change your maximum number of rooms.\n-> ")
                         try:
                             if str(password) == self.master_user_info["password"]:
-                                GuestRegistration.tot_num_rooms_change(self)
+                                self.tot_num_rooms_change()
                             else:
                                 print("Password is not correct. Would you like to use the password recover?")
                                 p_w_r = input("Y or N -> ").title()
@@ -207,10 +203,9 @@ class GuestRegistration:
                             print("Invalid entry")
 
                     elif guests == "Av":
-                        print(
-                            f"\n{GuestRegistration.tot_num_room - len(self.guest_seat)} rooms are available.\n")
+                        print(f"\n{self.tot_num_room - len(self.guest_seat)} rooms are available.\n")
 
-                    elif len(self.guest_seat) == GuestRegistration.tot_num_room:
+                    elif len(self.guest_seat) == self.tot_num_room:
                         print("\n**Guest was not added...**\n")
                         print("**You have no more rooms available\n")
 
