@@ -1,6 +1,7 @@
 import password_generator as pg
 import user_login as ul
 import user_document_folder as udl
+import encrypt_cred_file as ecf
 import time
 import os
 from os import path
@@ -15,8 +16,12 @@ class UserCred:
 
         # Checks the User's Document's folder for the 'Login Credential'
         # folder
-        self.file_exists = (udl.DOC_LOC + r'\Login '
-                                          r'Credentials\login_credentials.txt')
+        self.FILE = (udl.DOC_LOC +
+                     r"\Login Credentials\Login_Credential_Gen"
+                     r"\database\key\login_credentials.txt")
+        self.KEY_LOC = (udl.DOC_LOC +
+                        r"\Login Credentials\Login_Credential_Gen"
+                        r"\database\key\key.key")
 
     def cred_file(self) -> None:
         """
@@ -44,15 +49,18 @@ class UserCred:
                            "credentials?\n=> ").casefold()
         if user_input == "yes":
             # Opens the existing file
-            if os.path.exists(self.file_exists):
-                print("Opening 'login_credentials' file.")
+            if os.path.exists(self.FILE):
+                print("Opening 'login_credentials' file...")
+                key = ecf.load_key()
+                ecf.decrypt(self.FILE, key)
                 time.sleep(2)
+                print("File successfully opened.")
+                time.sleep(1)
+                print()
                 user_input = input("What application are the "
                                    "credentials for?\n=> ").upper()
                 while True:
-                    with open(os.path.join(self.USER_PATH + r'\Login '
-                                                            r'Credentials',
-                                           "login_credentials.txt"), "r") as f:
+                    with open(os.path.join(self.FILE), "r") as f:
                         application = f.read()
                         if user_input in application.split():
                             print("This application name already has a "
@@ -62,10 +70,7 @@ class UserCred:
                             user_input = input("What application are the "
                                                "credentials for?\n=> ").upper()
                         else:
-                            with open(os.path.join(self.USER_PATH +
-                                                   r'\Login Credentials',
-                                                   "login_credentials.txt"),
-                                                   "a") as f:
+                            with open(os.path.join(self.FILE), "a") as f:
 
                                 f.write(self.star + "\n")
                                 f.write(user_input + "\n")
@@ -83,7 +88,18 @@ class UserCred:
                                 print("*" * len(saved))
                                 print(saved)
                                 print("*" * len(saved))
-                                break
+                                if os.path.exists(self.USER_PATH +
+                                  r'\Login Credentials\Login_Credential_Gen '
+                                  r'\database\key\key.key'):
+
+                                    key = ecf.load_key()
+                                    ecf.encrypt(self.FILE, key)
+                                    break
+                                else:
+                                    ecf.write_key()
+                                    key = ecf.load_key()
+                                    ecf.encrypt(self.FILE, key)
+                                    break
             else:
                 print("Creating new login credential file...")
                 time.sleep(2)
@@ -94,7 +110,7 @@ class UserCred:
                 """
 
                 # Directory name
-                directory = 'Login Credentials'
+                directory = r'Login Credentials\Login_Credential_Gen\database\key'
                 # Parent Directory path to users default Document folder
                 # location
                 parent_dir = self.USER_PATH
@@ -113,9 +129,7 @@ class UserCred:
                 user_input = input("What service are the credentials for?"
                                    "\n=> ").upper()
 
-                with open(os.path.join(self.USER_PATH + r'\Login '
-                                                        r'Credentials',
-                                       'login_credentials.txt'), "w") as f:
+                with open(os.path.join(self.FILE), "w") as f:
                     f.write(self.star + "\n")
                     f.write(user_input + "\n")
                     f.write(self.line + "\n")
@@ -132,6 +146,18 @@ class UserCred:
                     print("*" * len(saved))
                     print(saved)
                     print("*" * len(saved))
+
+                    if os.path.exists(self.USER_PATH +
+                                      r'\Login Credentials\Login_Credential_Gen '
+                                      r'\database\key\key.key'):
+                        key = ecf.load_key()
+                        ecf.encrypt(self.FILE, key)
+
+                    else:
+                        ecf.write_key()
+                        key = ecf.load_key()
+                        ecf.encrypt(self.FILE, key)
+
         elif user_input == "n":
             print("Login credentials was not saved.")
             print()
@@ -153,7 +179,7 @@ class UserCred:
         """
         while True:
 
-            if path.exists(self.file_exists):
+            if path.exists(self.FILE):
                 password = pg.GenPass().gen_password()
                 time.sleep(2)
                 print("Your password is:")
@@ -164,28 +190,41 @@ class UserCred:
                 user_input = input("Would you like to save your login "
                                    "credentials?\n=>").casefold()
                 if user_input == "yes" or "y":
+                    print()
+                    print("Decrypting file...")
+                    # Checks path for existing key.key file
+                    if os.path.exists(self.KEY_LOC):
+                        key = ecf.load_key()
+                        ecf.decrypt(self.FILE, key)
+
+                    # Creates key.key file
+                    else:
+                        ecf.write_key()
+
+                    time.sleep(1)
+                    print("File successfully unencrypted.")
+                    print()
                     user_app_name = input("Enter application name\n=> ").upper()
+
                     while True:
-                        with open(os.path.join(self.USER_PATH + r'\Login '
-                                                                r'Credentials',
-                                               "login_credentials.txt"),
-                                  "r") as f:
+
+                        with open(os.path.join(self.FILE), "r") as f:
                             application = f.read()
                             if user_app_name in application.split():
                                 print("This application name already has a "
                                       "login credential.\nPlease modify the "
                                       "name.")
                                 time.sleep(1)
-                                user_app_name = input("What application are "
-                                                      "the "
-                                                      "credentials for?"
-                                                      "\n=> ").upper()
+                                user_app_name = input(
+                                    "What application are the credentials for?"
+                                    "\n=> ").upper()
+
                         user_username = input("Enter in your username\n=> ")
                         print("Saving login information...")
                         time.sleep(2)
                         # Appends the users self generated username and
                         # randomly generated password
-                        with open(self.file_exists, 'a') as f:
+                        with open(self.FILE, 'a') as f:
                             f.write(self.star + "\n")
                             f.write(user_app_name + "\n")
                             f.write(self.line + "\n")
@@ -194,6 +233,8 @@ class UserCred:
                             f.write(self.star + "\n")
                             f.write("\n")
                             f.close()
+                            key = ecf.load_key()
+                            ecf.encrypt(self.FILE, key)
                         time.sleep(2)
                         saved = "Your login credentials has been saved into " \
                                 "your Document's folder"
@@ -214,7 +255,8 @@ class UserCred:
                 """
 
                 # Directory name
-                directory = 'Login Credentials'
+                directory = r"Login Credentials\Login_Credential_Gen"
+                r"\database\key"
                 # Parent Directory path to users default Document folder
                 # location
                 parent_dir = self.USER_PATH
@@ -224,10 +266,18 @@ class UserCred:
                 # 'Login Credential' in users Document folder
                 os.mkdir(dir_path)
 
-                with open(os.path.join(self.USER_PATH + r'\Login Credentials',
-                                       "login_credentials.txt"), "a") as f:
+                with open(os.path.join(self.FILE), "a") as f:
                     f.write('')
                 print("Login credential file created.")
+                if os.path.exists(self.KEY_LOC):
+                    key = ecf.load_key()
+                    ecf.encrypt(self.FILE, key)
+
+                    # Creates key.key file
+                else:
+                    ecf.write_key()
+                    key = ecf.load_key()
+                    ecf.encrypt(self.FILE, key)
                 time.sleep(2)
 
 
