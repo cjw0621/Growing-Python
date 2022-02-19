@@ -1,3 +1,5 @@
+import os.path
+
 import M_Func
 import time
 import encrypt_cred_file as ecf
@@ -26,9 +28,9 @@ while True:
     elif user_input == "3":
         print("Opening user credentials...")
         print()
-        time.sleep(2)
+        time.sleep(1)
         open_cred_file.view_cred_file()
-        time.sleep(2)
+        time.sleep(1)
         key = ecf.load_key()
         ecf.encrypt(udl.DOC_LOC +
                     r'\Login Credentials\Login_Credential_Gen'
@@ -36,8 +38,20 @@ while True:
 
     elif user_input == "0":
         print("Closing the window...")
-        time.sleep(2)
-        break
+        key = ecf.load_key()
+        if os.path.exists(udl.DOC_LOC +
+                          r'\Login Credentials\Login_Credential_Gen'
+                          r'\database\key\key.key'):
+            time.sleep(1)
+            break
+        else:
+            key = ecf.load_key()
+            ecf.encrypt(udl.DOC_LOC +
+                        r'\Login Credentials\Login_Credential_Gen'
+                        r'\database\key\login_credentials.txt', key)
+
+            time.sleep(2)
+            break
 
     else:
         print()
