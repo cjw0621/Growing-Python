@@ -30,9 +30,9 @@ class UserCred:
         password.
         """
         username = ul.UsernameGen().gen_user_name()
-        time.sleep(2)
+        time.sleep(1)
         password = pg.GenPass().gen_password()
-        time.sleep(2)
+        time.sleep(1)
         print()
         print("Your username is:")
         print("*" * len(username))
@@ -53,7 +53,7 @@ class UserCred:
                 print("Opening 'login_credentials' file...")
                 key = ecf.load_key()
                 ecf.decrypt(self.FILE, key)
-                time.sleep(2)
+                time.sleep(1)
                 print("File successfully opened.")
                 time.sleep(1)
                 print()
@@ -82,7 +82,7 @@ class UserCred:
                                 f.close()
 
                                 print("Saving File...")
-                                time.sleep(2)
+                                time.sleep(1)
                                 saved = "Your login credentials has been " \
                                         "saved into your Document's folder"
                                 print("*" * len(saved))
@@ -102,7 +102,7 @@ class UserCred:
                                     break
             else:
                 print("Creating new login credential file...")
-                time.sleep(2)
+                time.sleep(1)
 
                 """
                 Creates a directory called 'Login Credentials' in the users 
@@ -120,7 +120,7 @@ class UserCred:
                 # 'Login Credential' in users Document folder
                 os.mkdir(dir_path)
                 print("Login credential file created.")
-                time.sleep(2)
+                time.sleep(1)
 
                 """
                 Creates a new file that stores users login credentials.
@@ -140,7 +140,7 @@ class UserCred:
                     f.close()
 
                     print("Saving File...")
-                    time.sleep(2)
+                    time.sleep(1)
                     saved = "Your login credentials has been " \
                             "saved into your Document's folder"
                     print("*" * len(saved))
@@ -181,7 +181,7 @@ class UserCred:
 
             if path.exists(self.FILE):
                 password = pg.GenPass().gen_password()
-                time.sleep(2)
+                time.sleep(1)
                 print("Your password is:")
                 print("*" * len(password))
                 print(password)
@@ -221,7 +221,7 @@ class UserCred:
 
                         user_username = input("Enter in your username\n=> ")
                         print("Saving login information...")
-                        time.sleep(2)
+                        time.sleep(1)
                         # Appends the users self generated username and
                         # randomly generated password
                         with open(self.FILE, 'a') as f:
@@ -235,7 +235,7 @@ class UserCred:
                             f.close()
                             key = ecf.load_key()
                             ecf.encrypt(self.FILE, key)
-                        time.sleep(2)
+                        time.sleep(1)
                         saved = "Your login credentials has been saved into " \
                                 "your Document's folder"
                         print("*" * len(saved))
@@ -278,7 +278,7 @@ class UserCred:
                     ecf.write_key()
                     key = ecf.load_key()
                     ecf.encrypt(self.FILE, key)
-                time.sleep(2)
+                time.sleep(1)
 
 
 if __name__ == "__main__":
